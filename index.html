@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Conversor de Moneda</title>
-</head>
-<body>
-    
+  </head>
+  <body>
     <h1>Conversor de monedas nacional</h1>
 
-    <p>Pesos CLP</p>
-    <input type="text">
+    <label for="cantidad">Pesos CLP</label>
+    <input name="cantidad" type="number" id="cantidad"/>
 
-    <p>Moneda a Convenir</p>
+    
+    <label for="indicadores">Moneda a Convenir</label>
+    <select name="indicadores" id="indicadores">
+      <!-- Lista de indicadores -->
+    </select>
 
-    <button>Buscar</button>
+    <button id="calcular">Buscar</button>
 
-    <p>Resultado: $ 500</p>
+    <p>Resultado: $ <span id="resultado"></span></p>
 
-
-
- <script src="./assets/js/mi_script.js"></script>   
-</body>
+    <script src="./assets/js/mi_script.js"></script>
+  </body>
 </html>
