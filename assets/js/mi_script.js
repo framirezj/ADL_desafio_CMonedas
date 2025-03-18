@@ -21,60 +21,55 @@ const botonCalcular = document.querySelector("#calcular");
 const cantidadCLP = document.querySelector("#cantidad");
 const resultado = document.querySelector("#resultado");
 
+let datosGlobal = [];
+let indicadoresGlobal = [];
+
 //Funcion para obtener los datos de la API
 const getDatos = async (url) => {
   try {
     const response = await fetch(url);
-    const datos = await response.json();
-    return datos;
+    return (datosGlobal = await response.json());
   } catch (error) {
     console.log(error.message);
   }
 };
 
 //Funcion para obtener un nuevo array con los indicadores, valores, unidad de medida.
-const getIndicadores = async () => {
-  const data = await getDatos(API_URL);
-
+const getIndicadores = () => {
   //obtener array de indicadores
-  const indicadores = Object.keys(data)
+  return (indicadoresGlobal = Object.keys(datosGlobal)
     .filter(
       (indicador) =>
         !metadatos.includes(indicador) &&
-        data[indicador].unidad_medida !== "Porcentaje"
+        datosGlobal[indicador].unidad_medida !== "Porcentaje"
     )
     .map((indicador) => ({
-      nombre: data[indicador].nombre,
-      valor: data[indicador].valor,
-      unidad: data[indicador].unidad_medida,
-    }));
-  //const indicadores = Object.keys(data).filter( indicador => console.log(data[indicador].valor));
-
-  console.log("indicadores", indicadores);
-  return indicadores;
+      codigo: datosGlobal[indicador].codigo,
+      nombre: datosGlobal[indicador].nombre,
+      valor: datosGlobal[indicador].valor,
+      unidad: datosGlobal[indicador].unidad_medida,
+    })));
 };
 
 //Funcion para poner el listado de indicadores
-const listadoIndicadores = async () => {
-  const indicadores = await getIndicadores();
-
+const listadoIndicadores = () => {
   let template = "";
-  for (const indicador of indicadores) {
+  for (const indicador of indicadoresGlobal) {
     template += `
-        <option value="${indicador.valor}">${indicador.nombre}</option>
+        <option value="${indicador.valor}" data-codigo="${indicador.codigo}">${indicador.nombre}</option>
     `;
   }
-
   selectIndicadores.innerHTML = template;
 };
 
 //Funcion al momento de apretar el boton para obtener el resultado
 botonCalcular.addEventListener("click", async () => {
   //obtener la lista de indicadores y el valor del dolar observado
-  const valorDolar = (await getIndicadores()).find(
-    (indicador) => indicador.nombre === "Dólar observado"
+  const valorDolar = indicadoresGlobal.find(
+    (indicador) => indicador.codigo === "dolar"
   ).valor;
 
+  //obtiene la referencia a la opción del listado
   const opcionSeleccionada =
     selectIndicadores.options[selectIndicadores.selectedIndex];
 
@@ -87,8 +82,66 @@ botonCalcular.addEventListener("click", async () => {
     resultado.innerHTML =
       Math.trunc((cantidadCLP.value / selectIndicadores.value) * 100) / 100;
   }
+
+  //llama al grafico
+  await createChart(opcionSeleccionada.dataset.codigo);
 });
 
+const getInicio = async () => {
+  await getDatos(API_URL);
+  getIndicadores();
+  listadoIndicadores();
+};
+
+/*  Luego, utiliza una librería de JavaScript de gráficas
+ para mostrar un historial de los últimos
+ 10 días del valor de la moneda a convertir seleccionada. */
+const createChart = async (codigo) => {
+  const response = await fetch(`https://mindicador.cl/api/${codigo}/2025`);
+  const data = await response.json();
+
+  //ultimos 10 registros
+  const dataSlice = data.serie.slice(0, 10);
+  console.log(dataSlice);
+
+  const valores = dataSlice.map((dato) => dato.valor);
+
+  const fechas = dataSlice.map((dato) => {
+    const fecha = new Date(dato.fecha);
+
+    const dia = fecha.getDate();
+    const mes = fecha.getMonth() + 1;
+    const year = fecha.getFullYear();
+
+    return `${dia}-${mes}-${year}`;
+  });
+
+  /* GRAFICO */
+  const ctx = document.getElementById("myChart").getContext("2d");
+  const myChart = new Chart(ctx, {
+    type: "bar", // Tipo de gráfico: 'bar', 'line', 'pie', etc.
+    data: {
+      labels: fechas.reverse(), // Etiquetas para las barras
+      datasets: [
+        {
+          label: "Ultimos 10 Registros",
+          data: valores.reverse(), // Datos que se mostrarán en las barras
+          borderWidth: 3,
+          borderColor: "#eeecec",
+          backgroundColor: "#9BD0F5",
+        },
+      ],
+    },
+    options: {
+      scales: {
+        y: {
+          min: Math.min(...valores),
+          max: Math.max(...valores), // Inicia el eje Y desde cero
+        },
+      },
+    },
+  });
+};
+
 //llamadas
-getIndicadores();
-listadoIndicadores();
+getInicio();
