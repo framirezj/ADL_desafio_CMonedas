@@ -13,16 +13,22 @@ Tip: En la guía de APIs hay un capítulo asociado a “Plugins de JavaScript (C
 Utiliza esto como referencia para generar el gráfico.
 */
 
-//Variables
-const API_URL = "https://mindicador.cl/api/";
-const metadatos = ["version", "autor", "fecha"];
+//referencias de elementos HTML
 const selectIndicadores = document.querySelector("#indicadores");
 const botonCalcular = document.querySelector("#calcular");
 const cantidadCLP = document.querySelector("#cantidad");
 const resultado = document.querySelector("#resultado");
 
+//variables para operar con la API
+const API_URL = "https://mindicador.cl/api/";
+const metadatos = ["version", "autor", "fecha"];
+
+//guardo los datos para no hacer varios llamadas a la API
 let datosGlobal = [];
 let indicadoresGlobal = [];
+
+//variable para guardar la instancia del grafico
+let myChart = null;
 
 //Funcion para obtener los datos de la API
 const getDatos = async (url) => {
@@ -62,7 +68,7 @@ const listadoIndicadores = () => {
   selectIndicadores.innerHTML = template;
 };
 
-//Funcion al momento de apretar el boton para obtener el resultado
+//Funcion de calculo
 botonCalcular.addEventListener("click", async () => {
   //obtener la lista de indicadores y el valor del dolar observado
   const valorDolar = indicadoresGlobal.find(
@@ -75,7 +81,6 @@ botonCalcular.addEventListener("click", async () => {
 
   if (opcionSeleccionada.textContent === "Bitcoin") {
     const dolaresCLP = cantidadCLP.value / valorDolar;
-
     const bitcoinCLP = dolaresCLP / selectIndicadores.value;
     resultado.innerHTML = Math.trunc(bitcoinCLP * 1000000) / 1000000;
   } else {
@@ -96,36 +101,45 @@ const getInicio = async () => {
 /*  Luego, utiliza una librería de JavaScript de gráficas
  para mostrar un historial de los últimos
  10 días del valor de la moneda a convertir seleccionada. */
+
 const createChart = async (codigo) => {
+  // Si ya existe un gráfico, destruye la instancia anterior.
+  if (myChart) {
+    myChart.destroy();
+  }
+
+  //solicitud a la API segun el codigo del indicador
   const response = await fetch(`https://mindicador.cl/api/${codigo}/2025`);
   const data = await response.json();
 
   //ultimos 10 registros
   const dataSlice = data.serie.slice(0, 10);
-  console.log(dataSlice);
 
-  const valores = dataSlice.map((dato) => dato.valor);
+  //crea los arrays de un dato especifico para presentarlo en el grafico y reverse debido a que los datos los da ascedente
+  const valores = dataSlice.map((dato) => dato.valor).reverse();
 
-  const fechas = dataSlice.map((dato) => {
-    const fecha = new Date(dato.fecha);
+  const fechas = dataSlice
+    .map((dato) => {
+      const fecha = new Date(dato.fecha);
 
-    const dia = fecha.getDate();
-    const mes = fecha.getMonth() + 1;
-    const year = fecha.getFullYear();
+      const dia = fecha.getDate();
+      const mes = fecha.getMonth() + 1;
+      const year = fecha.getFullYear();
 
-    return `${dia}-${mes}-${year}`;
-  });
+      return `${dia}-${mes}-${year}`;
+    })
+    .reverse();
 
   /* GRAFICO */
   const ctx = document.getElementById("myChart").getContext("2d");
-  const myChart = new Chart(ctx, {
+  myChart = new Chart(ctx, {
     type: "bar", // Tipo de gráfico: 'bar', 'line', 'pie', etc.
     data: {
-      labels: fechas.reverse(), // Etiquetas para las barras
+      labels: fechas,
       datasets: [
         {
           label: "Ultimos 10 Registros",
-          data: valores.reverse(), // Datos que se mostrarán en las barras
+          data: valores,
           borderWidth: 3,
           borderColor: "#eeecec",
           backgroundColor: "#9BD0F5",
@@ -135,8 +149,9 @@ const createChart = async (codigo) => {
     options: {
       scales: {
         y: {
-          min: Math.min(...valores),
-          max: Math.max(...valores), // Inicia el eje Y desde cero
+          //multiplico para generar un margin en el grafico de los valores minimos y maximos
+          min: Math.min(...valores) * 0.99,
+          max: Math.max(...valores) * 1.01,
         },
       },
     },
