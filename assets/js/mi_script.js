@@ -70,6 +70,16 @@ const listadoIndicadores = () => {
 
 //Funcion de calculo
 botonCalcular.addEventListener("click", async () => {
+
+  if(!cantidadCLP.value){
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "Por favor, intenta de nuevo ingresando un valor válido.",
+    });
+    return
+  }
+
   //obtener la lista de indicadores y el valor del dolar observado
   const valorDolar = indicadoresGlobal.find(
     (indicador) => indicador.codigo === "dolar"
