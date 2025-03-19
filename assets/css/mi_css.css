@@ -59,11 +59,17 @@ button {
   background-color: #292b3a;
 }
 
+#resultado{
+  font-size: 2rem;
+  color: #54ed78;
+}
+
 button {
   all: unset;
   background-color: #6272a4;
   cursor: pointer;
   padding: 1rem 3rem 1rem 3rem;
+  margin: 1rem 0 1rem 0;
 }
 
 input,
