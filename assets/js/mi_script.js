@@ -103,59 +103,87 @@ const getInicio = async () => {
  10 días del valor de la moneda a convertir seleccionada. */
 
 const createChart = async (codigo) => {
-  // Si ya existe un gráfico, destruye la instancia anterior.
-  if (myChart) {
-    myChart.destroy();
-  }
+  try {
+    // Si ya existe un gráfico, destruye la instancia anterior.
+    if (myChart) {
+      myChart.destroy();
+    }
 
-  //solicitud a la API segun el codigo del indicador
-  const response = await fetch(`https://mindicador.cl/api/${codigo}/2025`);
-  const data = await response.json();
+    //solicitud a la API segun el codigo del indicador
+    const response = await fetch(`https://mindicador.cl/api/${codigo}/2025`);
+    const data = await response.json();
 
-  //ultimos 10 registros
-  const dataSlice = data.serie.slice(0, 10);
+    //verifica los casos cuando no vienen registros en la serie.
+    if (!data.serie.length) {
+      console.log("No hay registros", data);
+      return;
+    }
 
-  //crea los arrays de un dato especifico para presentarlo en el grafico y reverse debido a que los datos los da ascedente
-  const valores = dataSlice.map((dato) => dato.valor).reverse();
+    //ultimos 10 registros
+    const dataSlice = data.serie.slice(0, 10);
 
-  const fechas = dataSlice
-    .map((dato) => {
-      const fecha = new Date(dato.fecha);
+    //crea los arrays de un dato especifico para presentarlo en el grafico y reverse debido a que los datos los da ascedente
+    const valores = dataSlice.map((dato) => dato.valor).reverse();
 
-      const dia = fecha.getDate();
-      const mes = fecha.getMonth() + 1;
-      const year = fecha.getFullYear();
+    const fechas = dataSlice
+      .map((dato) => {
+        const fecha = new Date(dato.fecha);
 
-      return `${dia}-${mes}-${year}`;
-    })
-    .reverse();
+        const dia = fecha.getDate();
+        const mes = fecha.getMonth() + 1;
+        const year = fecha.getFullYear();
 
-  /* GRAFICO */
-  const ctx = document.getElementById("myChart").getContext("2d");
-  myChart = new Chart(ctx, {
-    type: "bar", // Tipo de gráfico: 'bar', 'line', 'pie', etc.
-    data: {
-      labels: fechas,
-      datasets: [
-        {
-          label: "Ultimos 10 Registros",
-          data: valores,
-          borderWidth: 3,
-          borderColor: "#eeecec",
-          backgroundColor: "#9BD0F5",
-        },
-      ],
-    },
-    options: {
-      scales: {
-        y: {
-          //multiplico para generar un margin en el grafico de los valores minimos y maximos
-          min: Math.min(...valores) * 0.99,
-          max: Math.max(...valores) * 1.01,
+        return `${dia}-${mes}-${year}`;
+      })
+      .reverse();
+
+    /* GRAFICO */
+    const ctx = document.getElementById("myChart").getContext("2d");
+    myChart = new Chart(ctx, {
+      type: "line", // Tipo de gráfico: 'bar', 'line', 'pie', etc.
+      data: {
+        labels: fechas,
+        datasets: [
+          {
+            label: `Ultimos ${valores.length} registros`,
+            data: valores,
+            borderWidth: 1,
+            borderColor: "#9BD0F5",
+            backgroundColor: "#ffffff",
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            //multiplico para generar un margin en el grafico de los valores minimos y maximos
+            min: Math.min(...valores) * 0.99,
+            max: Math.max(...valores) * 1.01,
+            grid: {
+              color: "rgba(200, 200, 200, 0.2)", // Color de las líneas de la cuadrícula del eje Y
+              borderWidth: 1,
+            },
+            ticks: {
+              color: "hsl(0, 0%, 100%)",
+            },
+          },
+          x: {
+            grid: {
+              color: "rgba(200, 200, 200, 0.2)", // Color de las líneas de la cuadrícula del eje X
+              borderWidth: 1,
+            },
+            ticks: {
+              color: "hsl(0, 0%, 100%)",
+            },
+          },
         },
       },
-    },
-  });
+    });
+  } catch (e) {
+    console.log(e.message);
+  }
 };
 
 //llamadas

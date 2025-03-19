@@ -1,0 +1,64 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+body {
+  background-color: hsl(210, 8%, 25%);
+  color: hsl(0, 0%, 100%);
+  font-family: "Montserrat", sans-serif;  
+}
+
+.grid-container{
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+}
+
+header{
+    margin-top: 2rem;
+    text-align: center;
+}
+
+main{
+    margin-top: 3rem;
+    display: grid;
+    grid-template-rows: auto auto;
+    gap: 2rem;
+}
+
+input, select, button{
+    width: 100%;
+}
+
+
+#formulario{
+    width: 70%;
+    margin: 0 auto;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+
+    border: 1px solid hsl(0, 0%, 100%);
+    border-radius: 5%;
+    padding: 2rem;
+
+}
+
+#grafico{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 10px 0 10px;
+   
+}
+
+#myChart {
+    width: 100%;   /* Ancho completo */
+    height: 400px; /* Altura personalizada */
+  }
+
+
+

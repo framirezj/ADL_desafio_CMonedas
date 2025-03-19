@@ -3,30 +3,47 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
     <!-- chartjs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- css -->
+    <link rel="stylesheet" href="./assets/css/mi_css.css" />
     <title>Conversor de Moneda</title>
   </head>
   <body>
-    <h1>Conversor de monedas nacional</h1>
+    <div class="grid-container">
+      <header>
+        <h1>Conversor de monedas nacional</h1>
+      </header>
 
-    <label for="cantidad">Pesos CLP</label>
-    <input name="cantidad" type="number" id="cantidad"/>
+      <main>
+        
+        <section id="formulario">
+          <label for="cantidad">Pesos CLP</label>
+          <input name="cantidad" type="number" id="cantidad" />
 
-    
-    <label for="indicadores">Moneda a Convenir</label>
-    <select name="indicadores" id="indicadores">
-      <!-- Lista de indicadores -->
-    </select>
+          <label for="indicadores">Moneda a Convenir</label>
+          <select name="indicadores" id="indicadores">
+            
+          </select>
 
-    <button id="calcular">Buscar</button>
+          <button id="calcular">Buscar</button>
 
-    <p>Resultado: $ <span id="resultado"></span></p>
+          <p>Resultado: $ <span id="resultado"></span></p>
+        </section>
 
-    <!-- chartjs -->
-     <div class="grafica">
-      <canvas id="myChart"></canvas>
-     </div>
+        
+         <section id="grafico">
+            <canvas id="myChart"></canvas>          
+        </section>
+      </main>
+    </div>
 
     <script src="./assets/js/mi_script.js"></script>
   </body>
