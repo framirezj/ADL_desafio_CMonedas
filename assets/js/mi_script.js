@@ -18,10 +18,12 @@ const selectIndicadores = document.querySelector("#indicadores");
 const botonCalcular = document.querySelector("#calcular");
 const cantidadCLP = document.querySelector("#cantidad");
 const resultado = document.querySelector("#resultado");
+const items = document.querySelector("#items");
 
 //variables para operar con la API
 const API_URL = "https://mindicador.cl/api/";
 const metadatos = ["version", "autor", "fecha"];
+const codigos = ["uf", "dolar", "euro", "utm"]
 
 //guardo los datos para no hacer varios llamadas a la API
 let datosGlobal = [];
@@ -102,10 +104,31 @@ botonCalcular.addEventListener("click", async () => {
   await createChart(opcionSeleccionada.dataset.codigo);
 });
 
+const banner = () => {
+  console.log(indicadoresGlobal)
+  let template = ""
+
+  const indicadoresFiltro = indicadoresGlobal.filter(
+    indicador => codigos.includes(indicador.codigo)
+  )
+
+  for (const indicador of indicadoresFiltro) {
+    template += `
+    
+      <div class="item-divisa">
+            <span class="precio">$${indicador.valor}</span>
+            <span class="nombre">${indicador.codigo.toUpperCase()}</span>
+        </div>
+    `
+  }
+  items.innerHTML = template
+}
+
 const getInicio = async () => {
   await getDatos(API_URL);
   getIndicadores();
   listadoIndicadores();
+  banner()
 };
 
 /*  Luego, utiliza una librería de JavaScript de gráficas
@@ -158,8 +181,8 @@ const createChart = async (codigo) => {
             label: `Ultimos ${valores.length} registros`,
             data: valores,
             borderWidth: 1,
-            borderColor: "#9BD0F5",
-            backgroundColor: "#ffffff",
+            borderColor: "#8BE9FD ",
+            backgroundColor: "#8BE9FD ",
           },
         ],
       },

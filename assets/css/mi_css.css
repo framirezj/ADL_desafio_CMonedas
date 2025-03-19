@@ -3,10 +3,24 @@
   margin: 0;
 }
 
+.delius-unicase-regular {
+  font-family: "Delius Unicase", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.delius-unicase-bold {
+  font-family: "Delius Unicase", cursive;
+  font-weight: 700;
+  font-style: normal;
+}
+
 body {
-  background-color: hsl(210, 8%, 14%);
-  color: hsl(0, 0%, 100%);
-  font-family: "Montserrat", sans-serif;
+  color: #f8f8f2;
+  background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)),
+    url("../imgs/6917830.jpg");
+  background-size: cover;
+  background-color: #1e1e2e;
 }
 
 .grid-container {
@@ -42,33 +56,55 @@ button {
 
   padding: 2rem;
 
-  background-color: hsl(210, 8%, 25%);
+  background-color: #292b3a;
+}
+
+button {
+  all: unset;
+  background-color: #6272a4;
+  cursor: pointer;
+  padding: 1rem 3rem 1rem 3rem;
+}
+
+input,
+select {
+  padding: 0.8rem;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: bold;
+  background-color: #1e1e2e;
+  color: #f8f8f2;
+  border: none;
 }
 
 #grafico {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: hsl(210, 8%, 25%);
+  background-color: #292b3a;
   overflow: hidden;
 }
 
 #myChart {
-  width: 100%; /* Ancho completo */
-  height: 400px; /* Altura personalizada */
+  width: 100%;
+  height: 400px;
+}
+
+#items {
+  display: none;
 }
 
 @media (min-width: 1024px) {
-
   main {
     max-width: 70%;
     margin: 4rem auto;
     display: grid;
-    grid-template-columns: 1fr 3fr; /* Columnas fijas de 200px en los extremos y flexible en el medio */
-    
+    grid-template-columns: 1fr 3fr;
+
     grid-template-areas:
-      "f g "
-      "f d";
+      "f g"
+      "f g"
+      "d d";
   }
 
   #formulario {
@@ -79,13 +115,29 @@ button {
     grid-area: g;
   }
 
-  #myChart {
-    width: 200px; /* Ancho completo */
+  #items {
+    grid-area: d;
+    display: flex;
+    justify-content: space-evenly;
+    background-color: #292b3a;
+    padding: 2rem 0 2rem 0;
   }
 
+  .item-divisa {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    text-align: center;
+    gap: 1rem;
+    overflow: hidden;
+    font-size: 1rem;
+    min-width: 6rem;
+    max-width: 6rem;
+  }
 
-  #divisas {
-    grid-area: d;
-    background-color: hsl(210, 8%, 25%);
+  .precio {
+    background-color: #6272a4;
+    padding: 0.3rem 0 0.3rem 0;
   }
 }

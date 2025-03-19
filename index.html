@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Delius+Unicase:wght@400;700&display=swap"
       rel="stylesheet"
     />
     <!-- chartjs -->
@@ -18,41 +18,30 @@
     <link rel="stylesheet" href="./assets/css/mi_css.css" />
     <title>Conversor de Moneda</title>
   </head>
-  <body>
+  <body class="delius-unicase-regular">
     <div class="grid-container">
       <header>
-        <h1>Conversor de monedas nacional</h1>
+        <h1>conversor de monedas nacional</h1>
       </header>
 
       <main>
-        
         <section id="formulario">
           <label for="cantidad">Pesos CLP</label>
           <input name="cantidad" type="number" id="cantidad" />
 
           <label for="indicadores">Moneda a Convenir</label>
-          <select name="indicadores" id="indicadores">
-            
-          </select>
+          <select name="indicadores" id="indicadores"></select>
 
           <button id="calcular">Buscar</button>
 
           <p>Resultado: $ <span id="resultado"></span></p>
         </section>
 
-        
-         <section id="grafico">
-            <canvas id="myChart"></canvas>          
+        <section id="grafico">
+          <canvas id="myChart"></canvas>
         </section>
 
-        <section id="divisas">
-          <p>hola</p>
-          <p>hola</p>
-          <p>hola</p>
-          <p>hola</p>
-          <p>hola</p>
-          <p>hola</p>
-          
+        <section id="items">
           
         </section>
       </main>
